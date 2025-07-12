@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Event, useEventContext } from '@/contexts/EventContext';
 import { format } from 'date-fns';
+import useEventContext from '@/contexts/useEventContexts';
+import { Event } from '@/contexts/EventProvider';
 
 interface EventDialogProps {
   isOpen: boolean;

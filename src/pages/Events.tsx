@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { useEventContext } from '@/contexts/EventContext';
+import useEventContext from '@/contexts/useEventContexts';
 import EventCard from '@/components/EventCard';
 import EventDialog from '@/components/EventDialog';
 import { Button } from '@/components/ui/button';

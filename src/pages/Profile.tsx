@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { useEventContext } from '@/contexts/EventContext';
+import useEventContext from '@/contexts/useEventContexts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

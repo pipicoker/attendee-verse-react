@@ -1,6 +1,6 @@
 
-import { Event, useEventContext } from '@/contexts/EventContext';
-import { Button } from '@/components/ui/button';
+import useEventContext from '@/contexts/useEventContexts';
+import { Event } from '@/contexts/EventProvider';import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Users, Edit, Trash } from 'lucide-react';
 import { format } from 'date-fns';

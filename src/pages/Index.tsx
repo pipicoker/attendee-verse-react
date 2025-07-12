@@ -1,15 +1,28 @@
-
-import { useEventContext } from '@/contexts/EventContext';
+import useEventContext from '@/contexts/useEventContexts';
 import EventCard from '@/components/EventCard';
 import { Calendar, Users, TrendingUp } from 'lucide-react';
 
 const Index = () => {
-  const { events, registeredEvents, currentUser } = useEventContext();
+  const { events, registeredEvents, currentUser, eventsLoading } = useEventContext();
+
+ if (!currentUser || eventsLoading || !events  ) {
+  return <div>Loading user info...</div>;
+}
+
+console.log(events)
+
   
+  let upcomingEvents = [];
+let pastEvents = [];
+let myEvents = [];
+
+if (events.length > 0) {
   const now = new Date();
-  const upcomingEvents = events.filter(event => new Date(event.date) > now);
-  const pastEvents = events.filter(event => new Date(event.date) <= now);
-  const myEvents = events.filter(event => event.organizerId === currentUser.id);
+  upcomingEvents = events.filter(event => new Date(event.date) > now);
+  pastEvents = events.filter(event => new Date(event.date) <= now);
+  myEvents = events.filter(event => event.organizerId === currentUser.id);
+}
+
 
   return (
     <div className="space-y-8">
@@ -44,7 +57,7 @@ const Index = () => {
             </div>
             <div>
               <p className="text-sm text-gray-600">My Registrations</p>
-              <p className="text-2xl font-bold text-gray-900">{registeredEvents.length}</p>
+              <p className="text-2xl font-bold text-gray-900">{registeredEvents?.length}</p>
             </div>
           </div>
         </div>
@@ -71,7 +84,7 @@ const Index = () => {
         {upcomingEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {upcomingEvents.slice(0, 6).map(event => (
-              <EventCard key={event.id} event={event} />
+              <EventCard key={event._id} event={event} />
             ))}
           </div>
         ) : (

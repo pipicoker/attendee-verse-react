@@ -1,4 +1,4 @@
-
+import axios from "axios";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,16 +13,29 @@ import Navigation from "./components/Navigation";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import LandingPage from "./pages/LandingPage";
-import { EventProvider } from "./contexts/EventContext";
+import { EventProvider } from "./contexts/EventProvider";
 import { UserProvider, useUser } from "./contexts/UserContext";
-import { TicketProvider } from "./contexts/TicketContext";
-import TicketsDashboard from "./pages/tickets/TicketsDashboard";
-import TicketDetails from "./pages/tickets/TicketDetails";
+import VerifyEmailSent from "./pages/auth/VerifyEmailSent";
+import VerifiedSuccess from "./pages/auth/VerifiedSuccess";
+
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { user } = useUser();
+  const token = localStorage.getItem("token");
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete axios.defaults.headers.common["Authorization"];
+  }
+
+  const { user, loading } = useUser();
+
+
+    if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
 
   if (!user) {
     return (
@@ -30,6 +43,9 @@ const AppContent = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/verify-email-sent" element={<VerifyEmailSent />} />
+        <Route path="/verified-success" element={<VerifiedSuccess />} />
+        {/* Redirect all other paths to the landing page */}
         <Route path="*" element={<LandingPage />} />
       </Routes>
     );
@@ -44,8 +60,8 @@ const AppContent = () => {
           <Route path="/events" element={<Events />} />
           <Route path="/my-registrations" element={<MyRegistrations />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/tickets" element={<TicketsDashboard />} />
-          <Route path="/tickets/:id" element={<TicketDetails />} />
+          {/* <Route path="/tickets" element={<TicketsDashboard />} /> */}
+          {/* <Route path="/tickets/:id" element={<TicketDetails />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -58,13 +74,13 @@ const App = () => (
     <TooltipProvider>
       <UserProvider>
         <EventProvider>
-          <TicketProvider>
+          {/* <TicketProvider> */}
             <Toaster />
             <Sonner />
             <BrowserRouter>
               <AppContent />
             </BrowserRouter>
-          </TicketProvider>
+          {/* </TicketProvider> */}
         </EventProvider>
       </UserProvider>
     </TooltipProvider>
