@@ -1,155 +1,225 @@
 
-import useEventContext from '@/contexts/useEventContexts';
-import { Event } from '@/contexts/EventProvider';import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, MapPin, Users, Edit, Trash } from 'lucide-react';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import EventDialog from './EventDialog';
 import { useState } from 'react';
+import { Calendar, MapPin, Users, DollarSign, Edit, Trash2, Eye, UserMinus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import useEventContext from '@/contexts/useEventContexts';
+import EventDialog from './EventDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface EventCardProps {
-  event: Event;
+  event: any;
   isPast?: boolean;
+  showManageOptions?: boolean;
 }
 
-const EventCard = ({ event, isPast = false }: EventCardProps) => {
+const EventCard = ({ event, isPast = false, showManageOptions = false }: EventCardProps) => {
   const { registerForEvent, unregisterFromEvent, deleteEvent, isRegistered, canRegister, isOwner } = useEventContext();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  
-  const registered = isRegistered(event.id);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+
   const eventDate = new Date(event.date);
-  const isEventFull = event.registered >= event.capacity;
+  const isEventOwner = isOwner(event);
+  const isUserRegistered = isRegistered(event.id);
+  const canUserRegister = canRegister(event);
   
-  const getStatusBadge = () => {
-    if (isPast) return <Badge variant="secondary">Event Ended</Badge>;
-    if (registered) return <Badge className="bg-green-100 text-green-800">Registered</Badge>;
-    if (isEventFull) return <Badge variant="destructive">Full</Badge>;
-    return <Badge variant="outline">Available</Badge>;
+  const registrationPercentage = event.capacity > 0 ? (event.registered / event.capacity) * 100 : 0;
+
+  const handleRegister = () => {
+    registerForEvent(event.id);
   };
 
-  const getRegistrationButton = () => {
-    if (isPast || isOwner(event)) return null;
-    
-    if (registered) {
-      return (
-        <Button
-          onClick={() => unregisterFromEvent(event.id)}
-          variant="outline"
-          size="sm"
-          className="w-full"
-        >
-          Unregister
-        </Button>
-      );
-    }
-    
-    if (canRegister(event)) {
-      return (
-        <Button
-          onClick={() => registerForEvent(event.id)}
-          size="sm"
-          className="w-full bg-blue-600 hover:bg-blue-700"
-        >
-          Register Now
-        </Button>
-      );
-    }
-    
-    return (
-      <Button disabled size="sm" className="w-full">
-        {isEventFull ? 'Event Full' : 'Registration Closed'}
-      </Button>
-    );
+  const handleUnregister = () => {
+    unregisterFromEvent(event.id);
   };
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
-      deleteEvent(event.id);
+    deleteEvent(event.id);
+  };
+
+  const getStatusBadge = () => {
+    if (isPast) {
+      return <Badge variant="secondary">Completed</Badge>;
     }
+    if (event.registered >= event.capacity) {
+      return <Badge variant="destructive">Full</Badge>;
+    }
+    if (registrationPercentage > 80) {
+      return <Badge className="bg-yellow-500">Almost Full</Badge>;
+    }
+    return <Badge className="bg-green-500">Available</Badge>;
   };
 
   return (
     <>
-      <div className={cn(
-        "bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200 group",
-        isPast && "opacity-80"
-      )}>
-        {/* Event Image Placeholder */}
-        <div className="h-48 bg-gradient-to-br from-blue-400 to-purple-500 relative">
-          <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-            <Calendar className="h-12 w-12 text-white opacity-80" />
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+        {event.image && (
+          <div className="h-48 bg-gray-200 overflow-hidden">
+            <img
+              src={event.image}
+              alt={event.title}
+              className="w-full h-full object-cover"
+            />
           </div>
-          <div className="absolute top-4 left-4">
-            <Badge className="bg-white text-gray-900">{event.category}</Badge>
-          </div>
-          <div className="absolute top-4 right-4">
+        )}
+        
+        <div className="p-6">
+          <div className="flex justify-between items-start mb-3">
+            <h3 className="text-xl font-bold text-gray-900 line-clamp-2">{event.title}</h3>
             {getStatusBadge()}
           </div>
-        </div>
-
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-3">
-            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-              {event.title}
-            </h3>
-            {isOwner(event) && (
-              <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button
-                  onClick={() => setIsEditDialogOpen(true)}
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button
-                  onClick={handleDelete}
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
-          </div>
-
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-            {event.description}
-          </p>
-
+          
+          <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+          
           <div className="space-y-2 mb-4">
             <div className="flex items-center text-sm text-gray-500">
               <Calendar className="h-4 w-4 mr-2" />
-              {format(eventDate, 'PPP')} at {format(eventDate, 'p')}
+              {eventDate.toLocaleDateString()} at {eventDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
+            
             <div className="flex items-center text-sm text-gray-500">
               <MapPin className="h-4 w-4 mr-2" />
               {event.location}
             </div>
-            <div className="flex items-center text-sm text-gray-500">
-              <Users className="h-4 w-4 mr-2" />
-              {event.registered} / {event.capacity} registered
+            
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center text-gray-500">
+                <Users className="h-4 w-4 mr-2" />
+                {event.registered}/{event.capacity} registered
+              </div>
+              {event.price > 0 && (
+                <div className="flex items-center text-green-600 font-semibold">
+                  <DollarSign className="h-4 w-4 mr-1" />
+                  {event.price}
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-gray-500">by {event.organizer}</span>
-            <span className="text-lg font-bold text-green-600">
-              {event.price === 0 ? 'Free' : `$${event.price}`}
-            </span>
+          {/* Registration Progress Bar */}
+          <div className="mb-4">
+            <div className="flex justify-between text-xs text-gray-500 mb-1">
+              <span>Registration Progress</span>
+              <span>{Math.round(registrationPercentage)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  registrationPercentage > 80
+                    ? 'bg-yellow-500'
+                    : registrationPercentage > 60
+                    ? 'bg-blue-500'
+                    : 'bg-green-500'
+                }`}
+                style={{ width: `${Math.min(registrationPercentage, 100)}%` }}
+              />
+            </div>
           </div>
 
-          {getRegistrationButton()}
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-2">
+            {showManageOptions && isEventOwner ? (
+              // Event owner actions
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsViewDialogOpen(true)}
+                  className="flex-1"
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  View Details
+                </Button>
+                {!isPast && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsEditDialogOpen(true)}
+                  >
+                    <Edit className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                )}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Delete
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Event</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete "{event.title}"? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+                        Delete Event
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
+            ) : (
+              // Regular user actions
+              <>
+                {isUserRegistered ? (
+                  <Button
+                    variant="outline"
+                    onClick={handleUnregister}
+                    className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    disabled={isPast}
+                  >
+                    <UserMinus className="h-4 w-4 mr-2" />
+                    Unregister
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleRegister}
+                    disabled={!canUserRegister}
+                    className="flex-1"
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    {isPast ? 'Event Ended' : canUserRegister ? 'Register' : 'Full'}
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
 
+      {/* Edit Dialog */}
       <EventDialog
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
-        event={event}
         mode="edit"
+        event={event}
+      />
+
+      {/* View Details Dialog */}
+      <EventDialog
+        isOpen={isViewDialogOpen}
+        onClose={() => setIsViewDialogOpen(false)}
+        mode="view"
+        event={event}
       />
     </>
   );

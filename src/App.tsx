@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Events from "./pages/Events";
+import MyEvents from "./pages/MyEvents";
 import MyRegistrations from "./pages/MyRegistrations";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -58,10 +59,9 @@ const AppContent = () => {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/my-events" element={<MyEvents />} />
           <Route path="/my-registrations" element={<MyRegistrations />} />
           <Route path="/profile" element={<Profile />} />
-          {/* <Route path="/tickets" element={<TicketsDashboard />} /> */}
-          {/* <Route path="/tickets/:id" element={<TicketDetails />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -74,13 +74,11 @@ const App = () => (
     <TooltipProvider>
       <UserProvider>
         <EventProvider>
-          {/* <TicketProvider> */}
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AppContent />
-            </BrowserRouter>
-          {/* </TicketProvider> */}
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
         </EventProvider>
       </UserProvider>
     </TooltipProvider>
