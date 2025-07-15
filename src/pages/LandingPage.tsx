@@ -91,20 +91,22 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background ">
+    <div className="min-h-screen bg-background overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50">
-       <div className={`absolute inset-0 bg-[url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")] animate-pulse`}></div>
-
+        <div className={`absolute inset-0 bg-[url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")] animate-pulse`}></div>
+        {/* Floating Elements */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-pink-400/20 to-orange-400/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
       </div>
 
       {/* Header */}
-      <header className=" z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 sticky top-0">
+      <header className="relative z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 sticky top-0">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-sm opacity-75"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-sm opacity-75 animate-pulse"></div>
                 <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-2.5 rounded-xl">
                   <Calendar className="h-6 w-6 text-white" />
                 </div>
@@ -115,10 +117,10 @@ const LandingPage = () => {
             </div>
             
             <div className="hidden md:flex items-center space-x-4">
-              <Button variant="ghost" className="text-gray-600 hover:text-gray-900">Features</Button>
-              <Button variant="ghost" className="text-gray-600 hover:text-gray-900">Pricing</Button>
+              <Button variant="ghost" className="text-gray-600 hover:text-gray-900 hover:scale-105 transition-all duration-200">Features</Button>
+              <Button variant="ghost" className="text-gray-600 hover:text-gray-900 hover:scale-105 transition-all duration-200">Pricing</Button>
               <Link to="/login">
-                <Button variant="outline" className="hover:scale-105 transition-all duration-200">
+                <Button variant="outline" className="hover:scale-105 transition-all duration-200 border-2">
                   Sign In
                 </Button>
               </Link>
@@ -138,12 +140,12 @@ const LandingPage = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section with 3D Animation */}
       <section className="relative z-10 py-24 px-4">
         <div className="container mx-auto text-center">
           <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="inline-flex items-center bg-gradient-to-r from-blue-100 to-purple-100 rounded-full px-6 py-2 mb-8 border border-blue-200/50">
-              <Star className="h-4 w-4 text-yellow-500 mr-2" />
+            <div className="inline-flex items-center bg-gradient-to-r from-blue-100 to-purple-100 rounded-full px-6 py-2 mb-8 border border-blue-200/50 backdrop-blur-sm">
+              <Star className="h-4 w-4 text-yellow-500 mr-2 animate-pulse" />
               <span className="text-sm font-medium text-gray-700">Trusted by 10,000+ event organizers</span>
             </div>
             
@@ -174,17 +176,28 @@ const LandingPage = () => {
             </Button>
           </div>
 
-          {/* Hero Image with Glassmorphism */}
+          {/* 3D Hero Image with Event Focus */}
           <div className={`relative max-w-5xl mx-auto transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl blur-3xl"></div>
-              <div className="relative bg-white/20 backdrop-blur-xl rounded-3xl p-8 border border-white/30 shadow-2xl">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500"></div>
+              <div className="relative bg-white/20 backdrop-blur-xl rounded-3xl p-8 border border-white/30 shadow-2xl transform perspective-1000 group-hover:rotateY-2 group-hover:rotateX-2 transition-transform duration-500">
                 <img 
-                  src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80"
-                  alt="Event management dashboard"
-                  className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg"
+                  src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1200&q=80"
+                  alt="Event management conference with people networking"
+                  className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg transform group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
+                
+                {/* Floating 3D Elements */}
+                <div className="absolute -top-6 -left-6 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-xl transform rotate-12 group-hover:rotate-6 transition-transform duration-500 animate-float">
+                  <Calendar className="h-8 w-8 text-blue-600" />
+                </div>
+                <div className="absolute -top-6 -right-6 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-xl transform -rotate-12 group-hover:rotate-6 transition-transform duration-500 animate-float" style={{ animationDelay: '1s' }}>
+                  <Users className="h-8 w-8 text-purple-600" />
+                </div>
+                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-xl group-hover:scale-110 transition-transform duration-500 animate-float" style={{ animationDelay: '0.5s' }}>
+                  <Ticket className="h-8 w-8 text-pink-600" />
+                </div>
               </div>
             </div>
           </div>
@@ -248,12 +261,12 @@ const LandingPage = () => {
                 delay: "delay-600"
               }
             ].map((feature, index) => (
-              <Card key={index} className={`group hover:scale-105 transition-all duration-500 ${feature.delay} border-0 shadow-xl bg-white/80 backdrop-blur-sm hover:shadow-2xl`}>
+              <Card key={index} className={`group hover:scale-105 transition-all duration-500 ${feature.delay} border-0 shadow-xl bg-white/80 backdrop-blur-sm hover:shadow-2xl hover:bg-white/90`}>
                 <CardContent className="p-8 text-center">
-                  <div className={`bg-gradient-to-r ${feature.color} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
+                  <div className={`bg-gradient-to-r ${feature.color} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg group-hover:shadow-xl`}>
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900">{feature.title}</h3>
+                  <h3 className="text-2xl font-bold mb-4 text-gray-900 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{feature.description}</p>
                 </CardContent>
               </Card>
@@ -276,21 +289,22 @@ const LandingPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredEvents.map((event, index) => (
-              <Card key={event.id} className={`group hover:scale-105 transition-all duration-500 delay-${index * 100} border-0 shadow-xl bg-white overflow-hidden`}>
-                <div className="relative">
+              <Card key={event.id} className={`group hover:scale-105 transition-all duration-500 delay-${index * 100} border-0 shadow-xl bg-white overflow-hidden hover:shadow-2xl`}>
+                <div className="relative overflow-hidden">
                   <img 
                     src={event.image} 
                     alt={event.title}
                     className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="absolute top-4 left-4">
-                    <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
                       {event.category}
                     </span>
                   </div>
                 </div>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-2 text-gray-900">{event.title}</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors">{event.title}</h3>
                   <div className="flex items-center text-gray-600 mb-2">
                     <Clock className="h-4 w-4 mr-2" />
                     <span className="text-sm">{event.date}</span>
@@ -301,7 +315,7 @@ const LandingPage = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">{event.attendees.toLocaleString()} attending</span>
-                    <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                    <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 transition-all duration-200">
                       View Details
                     </Button>
                   </div>
@@ -326,18 +340,18 @@ const LandingPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className={`hover:scale-105 transition-all duration-500 delay-${index * 100} border-0 shadow-xl bg-gradient-to-br from-white to-gray-50`}>
+              <Card key={index} className={`hover:scale-105 transition-all duration-500 delay-${index * 100} border-0 shadow-xl bg-gradient-to-br from-white to-gray-50 hover:shadow-2xl group`}>
                 <CardContent className="p-8">
-                  <Quote className="h-8 w-8 text-blue-600 mb-4" />
+                  <Quote className="h-8 w-8 text-blue-600 mb-4 group-hover:scale-110 transition-transform" />
                   <p className="text-gray-700 mb-6 leading-relaxed">"{testimonial.quote}"</p>
                   <div className="flex items-center">
                     <img 
                       src={testimonial.image} 
                       alt={testimonial.name}
-                      className="w-12 h-12 rounded-full mr-4 object-cover"
+                      className="w-12 h-12 rounded-full mr-4 object-cover border-2 border-gray-200 group-hover:border-blue-300 transition-colors"
                     />
                     <div>
-                      <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
+                      <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{testimonial.name}</h4>
                       <p className="text-sm text-gray-600">{testimonial.role}, {testimonial.company}</p>
                     </div>
                   </div>
@@ -351,6 +365,7 @@ const LandingPage = () => {
       {/* Stats Section */}
       <section className="relative z-10 py-24 bg-gradient-to-r from-blue-600 to-purple-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 bg-[url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3C/g%3E%3C/svg%3E\")]"></div>
         <div className="container mx-auto px-4 relative">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
@@ -359,9 +374,9 @@ const LandingPage = () => {
               { number: "99.9%", label: "Uptime", delay: "delay-300" },
               { number: "24/7", label: "Support", delay: "delay-400" }
             ].map((stat, index) => (
-              <div key={index} className={`animate-pulse ${stat.delay}`}>
-                <div className="text-4xl md:text-6xl font-bold mb-2">{stat.number}</div>
-                <div className="text-blue-100">{stat.label}</div>
+              <div key={index} className={`group hover:scale-110 transition-transform duration-300 ${stat.delay}`}>
+                <div className="text-4xl md:text-6xl font-bold mb-2 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">{stat.number}</div>
+                <div className="text-blue-100 group-hover:text-white transition-colors">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -382,11 +397,11 @@ const LandingPage = () => {
 
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="bg-white rounded-xl border-0 shadow-lg">
-                <AccordionTrigger className="px-6 py-4 text-left hover:no-underline">
-                  <span className="font-semibold text-gray-900">{faq.question}</span>
+              <AccordionItem key={index} value={`item-${index}`} className="bg-white/80 backdrop-blur-sm rounded-xl border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <AccordionTrigger className="px-6 py-4 text-left hover:no-underline group">
+                  <span className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-4 text-gray-600">
+                <AccordionContent className="px-6 pb-4 text-gray-600 animate-slide-up">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -398,6 +413,7 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section className="relative z-10 py-24 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-[url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='3'/%3E%3C/g%3E%3C/svg%3E\")] animate-pulse"></div>
         <div className="container mx-auto px-4 text-center relative">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
             Ready to Create Amazing Events?
@@ -407,9 +423,9 @@ const LandingPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link to="/signup">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-xl px-12 py-6 hover:scale-105 transition-all duration-300 shadow-xl font-semibold">
+              <Button size="lg" className="group bg-white text-blue-600 hover:bg-gray-100 text-xl px-12 py-6 hover:scale-105 transition-all duration-300 shadow-xl font-semibold">
                 Start Your Free Trial
-                <ArrowRight className="ml-3 h-6 w-6" />
+                <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
             <Button variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 text-xl px-12 py-6 hover:scale-105 transition-all duration-300">
@@ -434,8 +450,7 @@ const LandingPage = () => {
                 The world's leading event management platform. Create, manage, and grow your events with ease.
               </p>
               <div className="flex space-x-4">
-                {/* Social Media Icons */}
-                <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors cursor-pointer">
+                <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors cursor-pointer hover:scale-110 duration-200">
                   <Globe className="h-5 w-5" />
                 </div>
               </div>
@@ -444,20 +459,20 @@ const LandingPage = () => {
             <div>
               <h3 className="font-semibold mb-4">Product</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Integrations</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 transform duration-200 inline-block">Features</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 transform duration-200 inline-block">Pricing</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 transform duration-200 inline-block">Templates</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 transform duration-200 inline-block">Integrations</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 transform duration-200 inline-block">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 transform duration-200 inline-block">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 transform duration-200 inline-block">Community</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 transform duration-200 inline-block">Status</a></li>
               </ul>
             </div>
           </div>
@@ -478,9 +493,9 @@ const LandingPage = () => {
       {/* Scroll to top button */}
       <button 
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-8 right-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-full shadow-lg hover:scale-110 transition-all duration-300 z-50"
+        className="fixed bottom-8 right-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-full shadow-lg hover:scale-110 transition-all duration-300 z-50 group"
       >
-        <ChevronDown className="h-5 w-5 rotate-180" />
+        <ChevronDown className="h-5 w-5 rotate-180 group-hover:translate-y-1 transition-transform" />
       </button>
     </div>
   );
