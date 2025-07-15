@@ -48,7 +48,6 @@ const Events = () => {
           <h1 className="text-3xl font-bold text-gray-900">All Events</h1>
           <p className="text-gray-600">Discover and join amazing events</p>
         </div>
-        {currentUser.role === 'organizer' && (
           <Button
             onClick={() => setIsCreateDialogOpen(true)}
             className="bg-blue-600 hover:bg-blue-700"
@@ -56,7 +55,6 @@ const Events = () => {
             <Plus className="h-4 w-4 mr-2" />
             Create Event
           </Button>
-        )}
       </div>
 
       {/* Filters */}
@@ -133,7 +131,6 @@ const Events = () => {
           <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No events found</h3>
           <p className="text-gray-500 mb-4">Try adjusting your search or filter criteria</p>
-          {currentUser.role === 'organizer' && (
             <Button
               onClick={() => setIsCreateDialogOpen(true)}
               className="bg-blue-600 hover:bg-blue-700"
@@ -141,7 +138,6 @@ const Events = () => {
               <Plus className="h-4 w-4 mr-2" />
               Create Your First Event
             </Button>
-          )}
         </div>
       )}
 

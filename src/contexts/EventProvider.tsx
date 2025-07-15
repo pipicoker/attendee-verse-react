@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
+import axiosInstance from '@/lib/axios';
 import axios from 'axios';
 import { toast } from '@/hooks/use-toast';
 import { useUser } from './UserContext';
@@ -23,6 +24,7 @@ export interface User {
   name: string;
   email: string;
   role: 'organizer' | 'attendee';
+  avatar: string
 }
 
 
@@ -58,12 +60,15 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             setEventsLoading(true); // start loading
             if (!user) return
             try {
-            const eventsRes = await axios.get('http://localhost:8000/api/events');
+            const eventsRes = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/events`);
 
             let registeredIds: string[] = [];
             try {
-                const registeredRes = await axios.get('http://localhost:8000/api/registrations/user-registrations');
-                registeredIds = registeredRes.data.registrations.map((r) => r.eventId._id);
+                const registeredRes = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/registrations/user-registrations`);
+                registeredIds = registeredRes.data.registrations
+              .filter((r) => r.eventId) // ✅ remove null or undefined ones
+              .map((r) => r.eventId._id); // ✅ now safe to access _id
+
 
             } catch (err) {
                 if (axios.isAxiosError(err) && err.response?.status === 404) {
@@ -73,7 +78,14 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 }
             }
 
-            setEvents(eventsRes.data); // default to []
+           const events = eventsRes.data.map((event) => ({
+              ...event,
+              id: event._id,
+            })) || [];
+
+            setEvents(events);
+
+
             setRegisteredEvents(registeredIds);
 
             setCurrentUser({
@@ -81,6 +93,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 name: user.name,
                 email: user.email,
                 role: user.role ?? 'attendee',
+                avatar: user.avatar
             });
             } catch (err) {
             console.error('Error loading data:', err);
@@ -101,7 +114,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const createEvent = async (eventData: Omit<Event, 'id' | 'registered'>) => {
     try {
-      const res = await axios.post('http://localhost:8000/api/events', eventData);
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/events`, eventData);
       setEvents(prev => [res.data.event, ...prev]);
       toast({ title: "Event Created", description: "Event successfully created." });
     } catch {
@@ -111,7 +124,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const updateEvent = async (id: string, updatedData: Partial<Event>) => {
     try {
-      await axios.put(`http://localhost:8000/api/events/${id}`, updatedData);
+      await axios.put(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/events/${id}`, updatedData);
       setEvents(prev => prev.map(e => (e.id === id ? { ...e, ...updatedData } : e)));
       toast({ title: "Event Updated", description: "Event updated successfully." });
     } catch {
@@ -121,7 +134,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const deleteEvent = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:8000/api/events/${id}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/events/${id}`);
       setEvents(prev => prev.filter(event => event.id !== id));
       toast({ title: "Event Deleted", description: "Event successfully deleted." });
     } catch {
@@ -131,7 +144,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const registerForEvent = async (eventId: string) => {
     try {
-      await axios.post(`http://localhost:8000/api/events/${eventId}/register`);
+      await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/registrations/${eventId}/register`);
       setRegisteredEvents(prev => [...prev, eventId]);
       setEvents(prev =>
         prev.map(event =>
@@ -146,7 +159,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const unregisterFromEvent = async (eventId: string) => {
     try {
-      await axios.post(`http://localhost:8000/api/events/${eventId}/unregister`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/registrations/${eventId}/unregister`);
       setRegisteredEvents(prev => prev.filter(id => id !== eventId));
       setEvents(prev =>
         prev.map(event =>

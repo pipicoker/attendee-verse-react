@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useUser } from '@/contexts/UserContext';
 import { toast } from '@/components/ui/use-toast';
 import { GoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+import axios from '@/lib/axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,7 +23,7 @@ const Login = () => {
   setLoading(true);
 
   try {
-    const response = await fetch('http://localhost:8000/api/auth/login', {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const Login = () => {
       name: data.user.name,
       email: data.user.email,
       role: data.user.role, 
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.user.email}`,
+      avatar: data.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.user.email}`,
     };
 
     login(user);
@@ -69,15 +69,6 @@ const Login = () => {
     setLoading(false);
   }
 };
-
-
-  const handleGoogleLogin = () => {
-    // Mock Google login - replace with actual Google OAuth
-    toast({
-      title: "Google Sign In",
-      description: "Google authentication would be implemented here.",
-    });
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -151,17 +142,23 @@ const Login = () => {
            <div className="w-full mt-4 flex justify-center">
             <GoogleLogin
               onSuccess={(credentialResponse) => {
-                axios.post('http://localhost:8000/api/auth/google', {
+                axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/auth/google`, {
                   credential: credentialResponse.credential
                 })
                 .then((res) => {
+                  // ✅ Save the token
+                  const token = res.data.token;
+                  localStorage.setItem('token', token);
+
+                  // ✅ Attach token to axios for future requests
+                  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                   toast({ title: 'Login Successful', description: `Welcome ${res.data.user.name}` });
                   const user = {
                     id: res.data.user._id,
                     name: res.data.user.name,
                     email: res.data.user.email,
                     role: res.data.user.role,
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${res.data.user.email}`,
+                    avatar: res.data.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${res.data.user.email}`,
                   };
                   login(user);
                   navigate('/');

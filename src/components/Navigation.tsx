@@ -16,8 +16,8 @@ const Navigation = () => {
     { path: '/events', label: 'Events', icon: Calendar },
     { path: '/my-events', label: 'My Events', icon: Plus },
     { path: '/my-registrations', label: 'My Registrations', icon: BookOpen },
-    { path: '/tickets', label: 'Support', icon: Ticket },
-    { path: '/profile', label: 'Profile', icon: User },
+    // { path: '/tickets', label: 'Support', icon: Ticket },
+    // { path: '/profile', label: 'Profile', icon: User },
   ];
 
   const handleLogout = () => {
@@ -64,7 +64,8 @@ const Navigation = () => {
 
           {/* Desktop User Menu */}
           <div className="hidden lg:flex items-center space-x-3">
-            <div className="flex items-center space-x-2">
+            <Link to="/profile">
+               <div className="flex items-center space-x-2">
               <img
                 src={user?.avatar}
                 alt={user?.name}
@@ -75,6 +76,7 @@ const Navigation = () => {
                 <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
               </div>
             </div>
+            </Link>
             <Button
               variant="ghost"
               size="sm"
@@ -126,17 +128,19 @@ const Navigation = () => {
             
             {/* Mobile User Info */}
             <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="flex items-center space-x-3 px-4 py-2">
-                <img
-                  src={user?.avatar}
-                  alt={user?.name}
-                  className="h-10 w-10 rounded-full border-2 border-gray-200"
-                />
-                <div>
-                  <p className="font-medium text-gray-700">{user?.name}</p>
-                  <p className="text-sm text-gray-500 capitalize">{user?.role}</p>
+              <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                <div className="flex items-center space-x-3 px-4 py-2">
+                  <img
+                    src={user?.avatar}
+                    alt={user?.name}
+                    className="h-10 w-10 rounded-full border-2 border-gray-200"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-700">{user?.name}</p>
+                    <p className="text-sm text-gray-500 capitalize">{user?.role}</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
               <Button
                 variant="ghost"
                 onClick={handleLogout}

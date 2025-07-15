@@ -10,7 +10,7 @@ import { useUser } from '@/contexts/UserContext';
 import { toast } from '@/components/ui/use-toast';
 import { GoogleLogin } from '@react-oauth/google';
 
-import axios from 'axios';
+import axios from '@/lib/axios';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   setLoading(true);
 
   try {
-    const response = await axios.post('http://localhost:8000/api/auth/signup', {
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/auth/signup`, {
       name: formData.name,
       email: formData.email,
       password: formData.password
@@ -202,17 +202,23 @@ navigate('/verify-email-sent');
             <div className="w-full mt-4 flex justify-center">
              <GoogleLogin
               onSuccess={(credentialResponse) => {
-                axios.post('http://localhost:8000/api/auth/google', {
+                axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/auth/google`, {
                   credential: credentialResponse.credential
                 })
                 .then((res) => {
+                  // ✅ Save the token
+                  const token = res.data.token;
+                  localStorage.setItem('token', token);
+
+                  // ✅ Attach token to axios for future requests
+                  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                   toast({ title: 'Login Successful', description: `Welcome ${res.data.user.name}` });
                   const user = {
                     id: res.data.user._id,
                     name: res.data.user.name,
                     email: res.data.user.email,
                     role: res.data.user.role,
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${res.data.user.email}`,
+                    avatar: res.data.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${res.data.user.email}`,
                   };
                   login(user);
                   navigate('/');

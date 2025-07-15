@@ -93,8 +93,8 @@ const MyEvents = () => {
             Upcoming Events ({upcomingEvents.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {upcomingEvents.map(event => (
-              <EventCard key={event.id} event={event} showManageOptions />
+            {upcomingEvents.map((event, index) => (
+              <EventCard key={index} event={event} showManageOptions />
             ))}
           </div>
         </section>
@@ -107,8 +107,8 @@ const MyEvents = () => {
             Past Events ({pastEvents.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastEvents.map(event => (
-              <EventCard key={event.id} event={event} isPast showManageOptions />
+            {pastEvents.map((event, index) => (
+              <EventCard key={index} event={event} isPast showManageOptions />
             ))}
           </div>
         </section>

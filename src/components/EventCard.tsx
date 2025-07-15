@@ -1,8 +1,10 @@
 
 import { useState } from 'react';
+import axios from 'axios';
 import { Calendar, MapPin, Users, DollarSign, Edit, Trash2, Eye, UserMinus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Toast } from './ui/toast';
 import useEventContext from '@/contexts/useEventContexts';
 import EventDialog from './EventDialog';
 import {
@@ -16,9 +18,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Event } from '@/contexts/EventProvider';
 
 interface EventCardProps {
-  event: any;
+  event: Event;
   isPast?: boolean;
   showManageOptions?: boolean;
 }
@@ -27,6 +30,8 @@ const EventCard = ({ event, isPast = false, showManageOptions = false }: EventCa
   const { registerForEvent, unregisterFromEvent, deleteEvent, isRegistered, canRegister, isOwner } = useEventContext();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+    const { currentUser } = useEventContext();
+
 
   const eventDate = new Date(event.date);
   const isEventOwner = isOwner(event);
@@ -35,11 +40,36 @@ const EventCard = ({ event, isPast = false, showManageOptions = false }: EventCa
   
   const registrationPercentage = event.capacity > 0 ? (event.registered / event.capacity) * 100 : 0;
 
-  const handleRegister = () => {
-    registerForEvent(event.id);
-  };
+ const handleRegisterAndPay = async () => {
+  try {
+    // If price is 0, just register directly
+    if (event.price === 0) {
+      registerForEvent(event.id);
+      return;
+    }
+
+    // Otherwise, initiate Stripe checkout session
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/stripe/create-checkout-session`, {
+      eventId: event.id,
+      eventName: event.title,
+      price: event.price,
+      userEmail: currentUser.email,
+    });
+
+    window.location.href = res.data.url; // Redirect to Stripe
+  } catch (err) {
+    console.error(err);
+    Toast({
+      title: 'Error',
+      // description: 'Could not initiate payment',
+      variant: 'destructive',
+    });
+  }
+};
+
 
   const handleUnregister = () => {
+     console.log("Trying to unregister for event:", event);
     unregisterFromEvent(event.id);
   };
 
@@ -192,7 +222,7 @@ const EventCard = ({ event, isPast = false, showManageOptions = false }: EventCa
                   </Button>
                 ) : (
                   <Button
-                    onClick={handleRegister}
+                    onClick={handleRegisterAndPay}
                     disabled={!canUserRegister}
                     className="flex-1"
                   >
@@ -215,12 +245,12 @@ const EventCard = ({ event, isPast = false, showManageOptions = false }: EventCa
       />
 
       {/* View Details Dialog */}
-      <EventDialog
+      {/* <EventDialog
         isOpen={isViewDialogOpen}
         onClose={() => setIsViewDialogOpen(false)}
         mode="view"
         event={event}
-      />
+      /> */}
     </>
   );
 };

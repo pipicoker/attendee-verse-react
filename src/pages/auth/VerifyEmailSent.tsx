@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
-import axios from 'axios';
+import axios from '@/lib/axios';
 
 const VerifyEmailSent = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ const VerifyEmailSent = () => {
 
     setResending(true);
     try {
-      await axios.post('http://localhost:8000/api/auth/resend-verification', { email });
+      await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/auth/resend-verification`, { email });
       toast({ title: 'Verification email resent', description: 'Check your inbox.' });
     } catch (error) {
       toast({

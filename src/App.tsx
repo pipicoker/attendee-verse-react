@@ -18,6 +18,7 @@ import { EventProvider } from "./contexts/EventProvider";
 import { UserProvider, useUser } from "./contexts/UserContext";
 import VerifyEmailSent from "./pages/auth/VerifyEmailSent";
 import VerifiedSuccess from "./pages/auth/VerifiedSuccess";
+import Success from "./pages/Success";
 
 
 const queryClient = new QueryClient();
@@ -63,6 +64,7 @@ const AppContent = () => {
           <Route path="/my-registrations" element={<MyRegistrations />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/success" element={<Success />} />
         </Routes>
       </main>
     </div>
