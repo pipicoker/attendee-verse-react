@@ -116,7 +116,7 @@ const MyRegistrations = () => {
 
         {/* Upcoming Registrations */}
         {upcomingRegistrations.length > 0 && (
-          <section>
+          <section className='px-2'>
             <div className="flex items-center space-x-3 mb-6">
               <Calendar className="h-6 w-6 text-blue-600" />
               <h2 className="text-3xl font-bold text-gray-900">

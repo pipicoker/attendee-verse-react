@@ -116,10 +116,10 @@ const Index = () => {
         </Card>
 
         {/* Upcoming Events */}
-        <section>
-          <div className="flex items-center justify-between mb-8">
+        <section className='px-2'>
+          <div className="flex items-center justify-between mb-8 ">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Upcoming Events</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2 ">Upcoming Events</h2>
               <p className="text-gray-600">{upcomingEvents.length} events waiting for you</p>
             </div>
             <Link to="/events">
@@ -151,7 +151,7 @@ const Index = () => {
 
         {/* Past Events */}
         {pastEvents.length > 0 && (
-          <section>
+          <section className='px-2'>
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Recent Events</h2>

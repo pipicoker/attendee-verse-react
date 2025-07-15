@@ -121,7 +121,7 @@ const Events = () => {
         </Card>
 
         {/* Results Summary */}
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
+        <div className="flex items-center space-x-2 text-sm text-gray-600 px-2">
           <Sparkles className="h-4 w-4" />
           <span>
             Found {filteredAndSortedEvents.length} event{filteredAndSortedEvents.length !== 1 ? 's' : ''}
@@ -132,7 +132,7 @@ const Events = () => {
 
         {/* Upcoming Events */}
         {upcomingEvents.length > 0 && (
-          <section>
+          <section className='px-2'>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold text-gray-900">
                 Upcoming Events 
@@ -151,7 +151,7 @@ const Events = () => {
 
         {/* Past Events */}
         {pastEvents.length > 0 && (
-          <section>
+          <section className='px-2'>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold text-gray-900">
                 Past Events 
