@@ -6,7 +6,7 @@ export interface User {
   name: string;
   email: string;
   avatar: string;
-  role: 'organizer' | 'attendee';
+  role: string;
 }
 
 interface UserContextType {
