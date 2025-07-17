@@ -32,11 +32,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
      localStorage.setItem("user", JSON.stringify(userData));
   };
 
-  const logout = () => {
+ const logout = async () => {
+  try {
+    await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/auth/logout`);
+  } catch (err) {
+    console.error('Logout failed:', err);
+  } finally {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     delete axios.defaults.headers.common["Authorization"];
     setUser(null);
-  };
+  }
+};
+
 
   useEffect(() => {
   const token = localStorage.getItem("token");
@@ -70,6 +78,24 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }
 }, []);
+
+useEffect(() => {
+  const interceptor = axios.interceptors.response.use(
+    response => response,
+    async error => {
+      if (error.response?.status === 401) {
+        // Token expired or invalid
+        await logout();
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  return () => {
+    axios.interceptors.response.eject(interceptor);
+  };
+}, []);
+
 
 
   return (

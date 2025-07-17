@@ -1,13 +1,15 @@
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Calendar, User, BookOpen, Home, Ticket, LogOut, Menu, X, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUser } from '@/contexts/UserContext';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
+
 const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -22,6 +24,7 @@ const Navigation = () => {
 
   const handleLogout = () => {
     logout();
+    navigate('/')
     setIsMobileMenuOpen(false);
   };
 
